@@ -1,0 +1,20 @@
+/* Target the carousel by its ID or class */
+.carousel {
+  max-width: 90vw; /* Maximum width of the carousel */
+  max-height: 80vh; /* Maximum height of the carousel */
+  margin: auto; /* Center the carousel */
+  overflow: hidden; /* Prevent overflow */
+}
+
+/* Ensure images within the carousel scale correctly */
+.carousel-inner {
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-item img {
+  object-fit: contain; /* Maintain aspect ratio without cropping */
+  max-height: 80vh; /* Maximum image height */
+  max-width: 90vw; /* Maximum image width */
+  margin: auto; /* Center the images */
+}

@@ -1,0 +1,55 @@
+{% macro render_posts(posts) %}
+<ul class="list-group list-group-flush">
+  {% for post in posts %}
+  <li class="list-group-item my-2 px-0" aria-current="true">
+    <div class="row">
+      <!-- stats -->
+      <div class="col-auto pe-0" style="width: 80px;">
+        <div class="d-flex justify-content-between text-secondary">
+          <i class="bi-chat-left-text-fill"></i>
+          <span class="stats">{{ post['c_count'] }}</span>
+        </div>
+        <div class="d-flex justify-content-between text-primary">
+          <i class="bi-eye"></i>
+          <span class="stats">{{ post['view_count'] }}</span>
+        </div>
+        <div class="d-flex justify-content-between text-danger">
+          <i class="bi-hand-thumbs-up-fill"></i>
+          <span class="stats">{{ post['l_count'] }}</span>
+        </div>
+      </div>
+      <!-- content -->
+      <div class="col">
+        <!-- title -->
+        <div class="container">
+          <h5>
+            <strong>
+              <a href="{{ url_for('view_comments', thread_id=post['thread_id']) }}" class="text-decoration-none dl">
+                {{ post['title'] }}
+              </a>
+            </strong>
+          </h5>
+        </div>
+        <!-- content -->
+        <div class="container"
+          style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+          <p>{{ post['content'] }}</p>
+        </div>
+        <!-- picture -->
+        <div class="container mt-2">
+          {% for pic in post['img_paths'] %}
+          <img src="https://b1.cdn.zanao.com/{{ pic }}@!sm_w80_h80" alt="Post Picture" class="img-thumbnail">
+          {% endfor %}
+        </div>
+        <!-- author -->
+        <div class="container d-flex text-muted mt-4 mb-2">
+          <img src="{{ post['headimgurl'] }}" alt="Profile Picture" class="rounded-circle"
+            style="width: 21px; height: 21px;">
+          <small>&nbsp;{{ post['nickname'] }}&nbsp;</small><small data-timestamp="{{ post['p_time'] }}"></small>
+        </div>
+      </div>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% endmacro %}
