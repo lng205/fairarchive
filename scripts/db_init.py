@@ -3,8 +3,8 @@ import sqlite3
 def main():
     database = r'data.db'
     # create_post_table(database)
-    create_comment_table(database)
     # add_columns_to_posts(database)
+    create_comment_table(database)
 
 
 def create_post_table(database):
