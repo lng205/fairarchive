@@ -28,7 +28,7 @@ def update_id(cursor):
                 c_count = excluded.c_count,
                 view_count = excluded.view_count,
                 l_count = excluded.l_count,
-                finish_status = excluded.finish_status,
+                finish_status = excluded.finish_status
             ''', (
                 int(post['thread_id']), int(post['cate_id']), json.dumps(post['img_paths']),
                 post['title'], post['content'], int(post['c_count']), 
@@ -82,8 +82,9 @@ def update_comment(cursor, post):
         cursor.execute('''
             INSERT INTO comments (thread_id, comment_id, reply_comment_id, root_comment_id, content, post_time, like_num, dislike_num, is_author, headimgurl, nickname)
             values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(comment_id) DO UPDATE SET
             like_num = excluded.like_num,
-            dislike_num = excluded.dislike_num,
+            dislike_num = excluded.dislike_num
         ''', (
             int(post.thread_id), int(c['comment_id']), int(c['reply_comment_id']), int(c['root_comment_id']), c['content'], 
             int(c['post_time']), int(c['like_num']), int(c['dislike_num']), int(c['is_author']), c['headimgurl'], c['nickname']
@@ -94,7 +95,7 @@ def update_comment(cursor, post):
                 values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ON CONFLICT(comment_id) DO UPDATE SET
                 like_num = excluded.like_num,
-                dislike_num = excluded.dislike_num,
+                dislike_num = excluded.dislike_num
             ''', (
                 int(post.thread_id), int(r['comment_id']), int(r['reply_comment_id']), int(r['root_comment_id']), r['content'], 
                 int(r['post_time']), int(r['like_num']), int(r['dislike_num']), int(r['is_author']), r['headimgurl'], r['nickname']
