@@ -41,9 +41,9 @@
     </button>
   </div>
 </div>
+
 <div class="container mt-5 px-0">
-  <!-- Define a macro for displaying a single comment and its nested replies -->
-  {% macro display_comment(comment) %}
+  {% for comment in comments %}
   <div class="card mb-2">
     <div class="card-body">
       <div class="d-flex gap-2">
@@ -60,27 +60,44 @@
               <span class="stats">{{ comment.like_num }}</span>
             </span>
           </div>
-          <!-- <p class="mb-1">
-            {% if comment.reply_to %}
-            <span class="text-muted">回复@{{ comment.reply_to }}：</span>{% endif %}{{ comment.content }}
-          </p> -->
+          <p class="mb-1">
+            {{ comment.content }}
+          </p>
         </div>
       </div>
-      <!-- Recursively display replies, if any -->
+
       {% if comment.reply_comments %}
       <div class="ms-4">
         {% for reply in comment.reply_comments %}
-        {{ display_comment(reply) }}
+        <div class="card mb-2">
+          <div class="card-body">
+            <div class="d-flex gap-2">
+              <img src="{{ reply.headimgurl }}" alt="Profile Picture" class="rounded-circle"
+                style="width: 48px; height: 48px;">
+              <div>
+                <div class="d-flex gap-2">
+                  <span>{{ reply.nickname }}</span>
+                  <span class="text-muted" data-timestamp="{{ reply.post_time }}"></span>
+
+                  <!-- like num -->
+                  <span class="text-danger">
+                    <i class="bi-hand-thumbs-up-fill"></i>
+                    <span class="stats">{{ reply.like_num }}</span>
+                  </span>
+                </div>
+                <p class="mb-1">
+                  {% if reply.reply_nickname %}<span class="text-muted">回复@{{ reply.reply_nickname }}：{% endif %}</span>{{ reply.content }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
         {% endfor %}
       </div>
       {% endif %}
+
     </div>
   </div>
-  {% endmacro %}
-
-  <!-- Use the macro to display each root comment and its replies -->
-  {% for comment in comments %}
-  {{ display_comment(comment) }}
   {% endfor %}
 </div>
 {% endblock %}

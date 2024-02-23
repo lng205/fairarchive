@@ -8,11 +8,8 @@ from sqlalchemy.orm import sessionmaker
 
 Session = sessionmaker(create_engine("sqlite:///data.db"))
 
-# For testing
-timestamp_95h_ago = int(datetime.now(timezone.utc).timestamp()) - 90 * 3600
-timestamp_96h_ago = timestamp_95h_ago - 6 * 3600
-# timestamp_95h_ago = int(datetime.now(timezone.utc).timestamp()) - 95 * 3600
-# timestamp_96h_ago = timestamp_95h_ago - 3600
+timestamp_95h_ago = int(datetime.now(timezone.utc).timestamp()) - 95 * 3600
+timestamp_96h_ago = timestamp_95h_ago - 3600
 
 
 def main():
