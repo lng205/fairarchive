@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column
 from sqlalchemy import ForeignKey
@@ -8,8 +8,8 @@ class Base(DeclarativeBase):
     pass
 
 
-class Threads(Base):
-    __tablename__ = "threads"
+class Thread(Base):
+    __tablename__ = "thread"
 
     thread_id: Mapped[int] = mapped_column(primary_key=True)
     cate_id: Mapped[int]
@@ -27,29 +27,32 @@ class Threads(Base):
     contact_qq: Mapped[Optional[str]]
     contact_wx: Mapped[Optional[str]]
     short_url: Mapped[Optional[str]]
+
+    comments: Mapped[List["Comment"]] = relationship(back_populates="thread")
+    img_paths: Mapped[List["ImgPath"]] = relationship(back_populates="thread")
     
     def __repr__(self) -> str:
         return f"Thread(thread_id={self.thread_id}, title={self.title})"
 
 
-class ImgPaths(Base):
-    __tablename__ = "img_paths"
+class ImgPath(Base):
+    __tablename__ = "img_path"
 
     img_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    thread_id = mapped_column(ForeignKey("threads.thread_id"))
+    thread_id = mapped_column(ForeignKey("thread.thread_id"))
     img_path: Mapped[str]
 
+    thread: Mapped["Thread"] = relationship(back_populates="img_paths")
+
     def __repr__(self) -> str:
-        return f"ImgPaths(img_id={self.img_id}, thread_id={self.thread_id})"
+        return f"ImgPath(img_id={self.img_id}, thread_id={self.thread_id})"
 
 
-class Comments(Base):
-    __tablename__ = "comments"
+class Comment(Base):
+    __tablename__ = "comment"
 
     comment_id: Mapped[int] = mapped_column(primary_key=True)
-    thread_id = mapped_column(ForeignKey("threads.thread_id"))
-    reply_comment_id: Mapped[int]
-    root_comment_id = mapped_column(ForeignKey("comments.comment_id"))
+    thread_id = mapped_column(ForeignKey("thread.thread_id"))
     content: Mapped[str]
     post_time: Mapped[int]
     like_num: Mapped[int]
@@ -58,8 +61,29 @@ class Comments(Base):
     headimgurl: Mapped[str]
     nickname: Mapped[str]
 
+    thread: Mapped["Thread"] = relationship(back_populates="comments")
+    reply_comments: Mapped[List["ReplyComment"]] = relationship(back_populates="comment")
 
     def __repr__(self) -> str:
         return f"Comment(comment_id={self.comment_id}, thread_id={self.thread_id})"
 
-    # post = relationship("Post", back_populates="comment")
+
+class ReplyComment(Base):
+    __tablename__ = "reply_comment"
+
+    comment_id: Mapped[int] = mapped_column(primary_key=True)
+    reply_comment_id = mapped_column(ForeignKey("reply_comment.comment_id"))
+    root_comment_id = mapped_column(ForeignKey("comment.comment_id"))
+    content: Mapped[str]
+    post_time: Mapped[int]
+    like_num: Mapped[int]
+    dislike_num: Mapped[int]
+    is_author: Mapped[bool]
+    headimgurl: Mapped[str]
+    nickname: Mapped[str]
+    reply_nickname: Mapped[str]
+
+    comment: Mapped["Comment"] = relationship(back_populates="reply_comments")
+
+    def __repr__(self) -> str:
+        return f"ReplyComment(comment_id={self.comment_id}, reply_comment_id={self.reply_comment_id})"
