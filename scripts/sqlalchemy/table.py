@@ -24,7 +24,7 @@ class Threads(Base):
     p_time: Mapped[int]
     contact_person: Mapped[Optional[str]]
     contact_phone: Mapped[Optional[str]]
-    contaxt_qq: Mapped[Optional[str]]
+    contact_qq: Mapped[Optional[str]]
     contact_wx: Mapped[Optional[str]]
     short_url: Mapped[Optional[str]]
     
@@ -48,7 +48,7 @@ class Comments(Base):
 
     comment_id: Mapped[int] = mapped_column(primary_key=True)
     thread_id = mapped_column(ForeignKey("threads.thread_id"))
-    reply_comment_id = mapped_column(ForeignKey("comments.comment_id"))
+    reply_comment_id: Mapped[int]
     root_comment_id = mapped_column(ForeignKey("comments.comment_id"))
     content: Mapped[str]
     post_time: Mapped[int]
