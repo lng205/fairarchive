@@ -1,33 +1,37 @@
+import re
+
+# Example text
+text = """
 {% import "macros.html" as macros %}
 
 {% extends "base.html" %}
 
-{% block title %}{{ post.title }} - 集市档案{% endblock %}
+{% block title %}{{ post['title'] }} - 集市档案{% endblock %}
 
 {% block content %}
 <div class="container py-4 border-bottom">
   <!-- author -->
   <div class="container ps-0 d-flex text-muted">
-    <img src="{{ post.headimgurl }}" alt="headimg" class="rounded-circle" style="width: 21px; height: 21px;">
-    <small>&nbsp;{{ post.nickname }}&nbsp;</small><small data-timestamp="{{ post.p_time }}"></small>
+    <img src="{{ post['headimgurl'] }}" alt="headimg" class="rounded-circle" style="width: 21px; height: 21px;">
+    <small>&nbsp;{{ post['nickname'] }}&nbsp;</small><small data-timestamp="{{ post['p_time'] }}"></small>
   </div>
 
-  <h3 class="title">{{ post.title }}</h3>
-  <p>{{ post.content }}</p>
+  <h3 class="title">{{ post['title'] }}</h3>
+  <p>{{ post['content'] }}</p>
 
   <!-- images -->
   <div id="carouselExampleIndicators" class="carousel slide">
     <ol class="carousel-indicators">
-      {% for pic in post.img_paths %}
+      {% for pic in post['img_paths'] %}
       <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{ loop.index0 }}"
       {% if loop.first %}class="active" aria-current="true"{% endif %}
       aria-label="Slide {{ loop.index }}"></button>
       {% endfor %}
     </ol>
     <div class="carousel-inner">
-      {% for img_path in post.img_paths %}
+      {% for pic in post['img_paths'] %}
       <div class="carousel-item {% if loop.first %}active{% endif %}">
-        <img src="https://b1.cdn.zanao.com/{{ img_path.img_path }}@!common" class="d-block" alt="post pic">
+        <img src="https://b1.cdn.zanao.com/{{ pic }}@!common" class="d-block" alt="post pic">
       </div>
       {% endfor %}
     </div>
@@ -47,29 +51,29 @@
   <div class="card mb-2">
     <div class="card-body">
       <div class="d-flex gap-2">
-        <img src="{{ comment.headimgurl }}" alt="Profile Picture" class="rounded-circle"
+        <img src="{{ comment['headimgurl'] }}" alt="Profile Picture" class="rounded-circle"
           style="width: 48px; height: 48px;">
         <div>
           <div class="d-flex gap-2">
-            <span>{{ comment.nickname }}</span>
-            <span class="text-muted" data-timestamp="{{ comment.post_time }}"></span>
+            <span>{{ comment['nickname'] }}</span>
+            <span class="text-muted" data-timestamp="{{ comment['post_time'] }}"></span>
 
             <!-- like num -->
             <span class="text-danger">
               <i class="bi-hand-thumbs-up-fill"></i>
-              <span class="stats">{{ comment.like_num }}</span>
+              <span class="stats">{{ comment['like_num'] }}</span>
             </span>
           </div>
-          <!-- <p class="mb-1">
-            {% if comment.reply_to %}
-            <span class="text-muted">回复@{{ comment.reply_to }}：</span>{% endif %}{{ comment.content }}
-          </p> -->
+          <p class="mb-1">
+            {% if comment['reply_to'] %}
+            <span class="text-muted">回复@{{ comment['reply_to'] }}：</span>{% endif %}{{ comment['content'] }}
+          </p>
         </div>
       </div>
       <!-- Recursively display replies, if any -->
-      {% if comment.reply_comments %}
+      {% if comment['replies'] %}
       <div class="ms-4">
-        {% for reply in comment.reply_comments %}
+        {% for reply in comment['replies'] %}
         {{ display_comment(reply) }}
         {% endfor %}
       </div>
@@ -84,3 +88,15 @@
   {% endfor %}
 </div>
 {% endblock %}
+
+
+"""
+
+# Pattern to find and replace
+pattern = r"(\w*)\['(\w*?)'\]"
+replacement = r"\1.\2"
+
+# Replacement operation
+replaced_text = re.sub(pattern, replacement, text)
+
+print(replaced_text)

@@ -1,21 +1,23 @@
-import time, json
 from post import Post
 from datetime import datetime, timezone
 
-from table import Thread, ImgPath, Comment, ReplyComment
+from db_init import Thread, ImgPath, Comment, ReplyComment
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine("sqlite:///data.db")
-Session = sessionmaker(engine)
 
-timestamp_95h_ago = int(datetime.now(timezone.utc).timestamp()) - 96 * 3600
-timestamp_96h_ago = timestamp_95h_ago - 3600
+Session = sessionmaker(create_engine("sqlite:///data.db"))
+
+# For testing
+timestamp_95h_ago = int(datetime.now(timezone.utc).timestamp()) - 90 * 3600
+timestamp_96h_ago = timestamp_95h_ago - 6 * 3600
+# timestamp_95h_ago = int(datetime.now(timezone.utc).timestamp()) - 95 * 3600
+# timestamp_96h_ago = timestamp_95h_ago - 3600
 
 
 def main():
     update_ids()
-    # update_posts()
+    update_posts()
 
 
 def update_ids() -> None:
@@ -52,7 +54,6 @@ def update_ids() -> None:
 
             try:
                 earlist_p_time = post_list[-1]["p_time"]
-                print(f"timestamp update: {earlist_p_time}")
             except Exception:
                 break
         session.commit()
@@ -61,8 +62,8 @@ def update_ids() -> None:
 def update_posts():
     stmt = (
         select(Thread)
-        # .where(Thread.p_time > timestamp_48h_ago)
-        # .where(Thread.p_time < timestamp_47h_ago)
+        .where(Thread.p_time > timestamp_96h_ago)
+        .where(Thread.p_time < timestamp_95h_ago)
     )
 
     with Session() as session:
@@ -76,7 +77,6 @@ def update_posts():
             thread.contact_phone = info["contact_phone"]
             thread.contact_qq = info["contact_qq"]
             thread.contact_wx = info["contact_wx"]
-            thread.short_url = info["short_url"]
             session.add(thread)
 
             comment = post.get_comment().json()["data"]["list"]

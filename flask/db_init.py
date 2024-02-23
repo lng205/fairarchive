@@ -1,11 +1,10 @@
-from typing import Optional, List
-
 from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column
-from sqlalchemy import ForeignKey
+from sqlalchemy import create_engine, ForeignKey
+from typing import Optional, List
 
 
 class Base(DeclarativeBase):
-    pass
+  pass
 
 
 class Thread(Base):
@@ -26,7 +25,6 @@ class Thread(Base):
     contact_phone: Mapped[Optional[str]]
     contact_qq: Mapped[Optional[str]]
     contact_wx: Mapped[Optional[str]]
-    short_url: Mapped[Optional[str]]
 
     comments: Mapped[List["Comment"]] = relationship(back_populates="thread")
     img_paths: Mapped[List["ImgPath"]] = relationship(back_populates="thread")
@@ -87,3 +85,7 @@ class ReplyComment(Base):
 
     def __repr__(self) -> str:
         return f"ReplyComment(comment_id={self.comment_id}, reply_comment_id={self.reply_comment_id})"
+
+
+if __name__ == "__main__":
+    Base.metadata.create_all(create_engine('sqlite:///data.db'))
