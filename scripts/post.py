@@ -1,10 +1,9 @@
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
-import os
 from dotenv import load_dotenv
-
 load_dotenv()
+import os
 
 
 class Post():

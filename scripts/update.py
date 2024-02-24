@@ -1,18 +1,10 @@
+from scripts import db, Thread, ImgPath, Comment, ReplyComment
 from scripts.post import Post
 from datetime import datetime, timezone
-
-from app import app, db
-from app.models import Thread, ImgPath, Comment, ReplyComment
 from sqlalchemy import select # db.select don't have linting support in VSCode
 
 timestamp_95h_ago = int(datetime.now(timezone.utc).timestamp()) - 95 * 3600
 timestamp_96h_ago = timestamp_95h_ago - 3600
-
-
-def main():
-    with app.app_context():
-        update_ids()
-        update_posts()
 
 
 def update_ids() -> None:
@@ -50,6 +42,7 @@ def update_ids() -> None:
             earlist_p_time = post_list[-1]["p_time"]
         except Exception:
             break
+
     db.session.commit()
 
 
@@ -107,7 +100,3 @@ def update_posts():
                 )
 
     db.session.commit()
-
-
-if __name__ == "__main__":
-    main()
