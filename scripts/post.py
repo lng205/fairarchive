@@ -1,9 +1,11 @@
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
-from dotenv import load_dotenv
-load_dotenv()
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 class Post():
     cookies = {
@@ -61,8 +63,7 @@ class Post():
             f'''https://c.zanao.com/sc-api/comment/list?id={self.thread_id}&rcid=0&vuid=0&sign={self.sign}
             &https://c.zanao.com/p/info/{self.thread_id}?from=cate&cid=hitsz&isIOS=false''',
             cookies=self.cookies, headers=self.headers)
+    
 
-
-# Testing
-if __name__ == "__main__":
-    print(Post.get_ids('0').json())
+if __name__ == '__main__':
+    print(Post.get_ids().json())

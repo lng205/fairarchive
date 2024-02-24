@@ -1,15 +1,10 @@
-from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column
-from sqlalchemy import create_engine, ForeignKey
+from app import db
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy import ForeignKey
 from typing import Optional, List
 
 
-class Base(DeclarativeBase):
-  pass
-
-
-class Thread(Base):
-    __tablename__ = "thread"
-
+class Thread(db.Model):
     thread_id: Mapped[int] = mapped_column(primary_key=True)
     cate_id: Mapped[int]
     title: Mapped[str]
@@ -28,27 +23,17 @@ class Thread(Base):
 
     comments: Mapped[List["Comment"]] = relationship(back_populates="thread")
     img_paths: Mapped[List["ImgPath"]] = relationship(back_populates="thread")
-    
-    def __repr__(self) -> str:
-        return f"Thread(thread_id={self.thread_id}, title={self.title})"
 
 
-class ImgPath(Base):
-    __tablename__ = "img_path"
-
+class ImgPath(db.Model):
     img_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     thread_id = mapped_column(ForeignKey("thread.thread_id"))
     img_path: Mapped[str]
 
     thread: Mapped["Thread"] = relationship(back_populates="img_paths")
 
-    def __repr__(self) -> str:
-        return f"ImgPath(img_id={self.img_id}, thread_id={self.thread_id})"
 
-
-class Comment(Base):
-    __tablename__ = "comment"
-
+class Comment(db.Model):
     comment_id: Mapped[int] = mapped_column(primary_key=True)
     thread_id = mapped_column(ForeignKey("thread.thread_id"))
     content: Mapped[str]
@@ -62,13 +47,8 @@ class Comment(Base):
     thread: Mapped["Thread"] = relationship(back_populates="comments")
     reply_comments: Mapped[List["ReplyComment"]] = relationship(back_populates="comment")
 
-    def __repr__(self) -> str:
-        return f"Comment(comment_id={self.comment_id}, thread_id={self.thread_id})"
 
-
-class ReplyComment(Base):
-    __tablename__ = "reply_comment"
-
+class ReplyComment(db.Model):
     comment_id: Mapped[int] = mapped_column(primary_key=True)
     reply_comment_id = mapped_column(ForeignKey("reply_comment.comment_id"))
     root_comment_id = mapped_column(ForeignKey("comment.comment_id"))
@@ -82,10 +62,3 @@ class ReplyComment(Base):
     reply_nickname: Mapped[str]
 
     comment: Mapped["Comment"] = relationship(back_populates="reply_comments")
-
-    def __repr__(self) -> str:
-        return f"ReplyComment(comment_id={self.comment_id}, reply_comment_id={self.reply_comment_id})"
-
-
-if __name__ == "__main__":
-    Base.metadata.create_all(create_engine('sqlite:///data.db'))
