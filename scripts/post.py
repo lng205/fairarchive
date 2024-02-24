@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 
+
 class Post():
     cookies = {
         'user_token': os.getenv('USER_TOKEN'),
@@ -25,7 +26,7 @@ class Post():
         'sec-fetch-dest': 'empty',
     }
     @classmethod
-    def get_ids(cls, from_time):
+    def get_ids(cls, from_time: str = '0'):
         headers = cls.headers
         headers['referer'] = 'https://c.zanao.com/p/home?cid=hitsz'
         params = {'from_time': from_time, 'hot': '1', 'isIOS': 'false'}
@@ -33,7 +34,7 @@ class Post():
                                 params=params, cookies=cls.cookies, headers=headers)
 
 
-    def __init__(self, thread_id) -> None:
+    def __init__(self, thread_id: str) -> None:
         self.thread_id = thread_id
         self.headers['referer'] = f'https://c.zanao.com/p/info/{self.thread_id}?from=cate&cid=hitsz'
         self.info = self._get_info()
@@ -61,8 +62,7 @@ class Post():
             f'''https://c.zanao.com/sc-api/comment/list?id={self.thread_id}&rcid=0&vuid=0&sign={self.sign}
             &https://c.zanao.com/p/info/{self.thread_id}?from=cate&cid=hitsz&isIOS=false''',
             cookies=self.cookies, headers=self.headers)
+    
 
-
-# Testing
-if __name__ == "__main__":
-    print(Post.get_ids('0').json())
+if __name__ == '__main__':
+    print(Post.get_ids().json())

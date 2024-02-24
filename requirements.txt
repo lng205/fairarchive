@@ -12,7 +12,7 @@ MarkupSafe==2.1.5
 python-dotenv==1.0.1
 requests==2.31.0
 requests-toolbelt==1.0.0
-SQLAlchemy==2.0.25
+SQLAlchemy==2.0.27
 typing_extensions==4.9.0
 urllib3==2.2.0
 Werkzeug==3.0.1
